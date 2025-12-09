@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+line-bot-sdk
+psycopg2-binary
+requests
+beautifulsoup4
+python-dotenv

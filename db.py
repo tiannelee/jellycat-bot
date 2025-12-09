@@ -197,3 +197,28 @@ def admin_remove_by_name(name: str, sku: str) -> str | None:
             )
 
             return item_name
+
+
+def get_list_for_sku(sku: str):
+    """
+    Return the full waiting list for a given SKU, ordered by created_at.
+
+    Each row is a dict with:
+        - sku
+        - item_name
+        - display_name
+        - user_id
+        - created_at
+    """
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT sku, item_name, display_name, user_id, created_at
+                FROM wishlist_entries
+                WHERE sku = %s
+                ORDER BY created_at
+                """,
+                (sku,),
+            )
+            return cur.fetchall()

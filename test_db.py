@@ -1,28 +1,18 @@
-# test_db.py
-import os
 from dotenv import load_dotenv
+import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-load_dotenv()  # read .env
+load_dotenv()
 
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = os.getenv("DATABASE_URL")
+print("DATABASE_URL =", DATABASE_URL)
 
-def main():
-    print("DATABASE_URL:", DATABASE_URL)
-    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
-    cur = conn.cursor()
-    cur.execute("SELECT NOW() AS server_time;")
-    row = cur.fetchone()
-    print("Connected! Supabase time:", row["server_time"])
+conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
+cur = conn.cursor()
+cur.execute("SELECT current_database() AS db, current_schema() AS schema;")
+row = cur.fetchone()
+print("Connected! db:", row["db"], "schema:", row["schema"])
 
-    # Optional: check your wishlist_entries table
-    cur.execute("SELECT COUNT(*) AS c FROM wishlist_entries;")
-    row = cur.fetchone()
-    print("wishlist_entries rows:", row["c"])
-
-    cur.close()
-    conn.close()
-
-if __name__ == "__main__":
-    main()
+cur.close()
+conn.close()
